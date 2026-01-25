@@ -1,49 +1,50 @@
-import { useBikes } from '../hooks/useBikes';
+import { useUsers } from '../hooks/useUsers';
 import { PencilIcon, TrashIcon, XCircleIcon, PlusIcon } from '@heroicons/react/24/solid';
-import EditModal from './EditModal';
-import AddBikeModal from './AddBikeModal';
+import EditUserModal from './EditUserModal';
+import AddUserModal from './AddUserModal';
 import React, { useState } from 'react';
 
-export default function BikesList() {
-  const { data: bikes = [], isLoading, editBike, deleteBike, disableBike } = useBikes();
-  const [selectedBike, setSelectedBike] = useState(null);
+export default function UsersList() {
+  const { data: users = [], isLoading, editUser, deleteUser, disableUser } = useUsers();
+  const [selectedUser, setSelectedUser] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Estado para paginado
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
-  const totalPages = Math.ceil(bikes.length / recordsPerPage);
+  const totalPages = Math.ceil(users.length / recordsPerPage);
 
-  // Calcular bicis de la página actual
+  // Calcular usuarios de la página actual
   const indexOfLast = currentPage * recordsPerPage;
   const indexOfFirst = indexOfLast - recordsPerPage;
-  const currentBikes = bikes.slice(indexOfFirst, indexOfLast);
+  const currentUsers = users.slice(indexOfFirst, indexOfLast);
 
-  if (isLoading) return <p>Loading bikes...</p>;
+  if (isLoading) return <p>Loading users...</p>;
 
-  const handleEditClick = (bike) => {
-    setSelectedBike(bike);
+  const handleEditClick = (user) => {
+    setSelectedUser(user);
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEdit = (updatedBike) => {
-    editBike({ id: updatedBike.id, payload: updatedBike });
+  const handleSaveEdit = (updatedUser) => {
+    editUser({ id: updatedUser.id, payload: updatedUser });
   };
 
-  const handleSaveNew = (newBike) => {
-    editBike({ id: newBike.id, payload: newBike });
+  const handleSaveNew = (newUser) => {
+    // En backend real sería un POST, acá simulamos con editUser
+    editUser({ id: newUser.id, payload: newUser });
   };
 
   return (
     <div className="bg-white border rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold">Bikes</h3>
+        <h3 className="text-xl font-semibold">Users</h3>
         <button
           onClick={() => setIsAddModalOpen(true)}
           className="flex items-center px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
-          <PlusIcon className="h-5 w-5 mr-1" /> Add Bike
+          <PlusIcon className="h-5 w-5 mr-1" /> Add User
         </button>
       </div>
 
@@ -52,37 +53,35 @@ export default function BikesList() {
           <tr className="bg-gray-100 text-left">
             <th className="p-3 border">ID</th>
             <th className="p-3 border">Name</th>
+            <th className="p-3 border">Email</th>
             <th className="p-3 border">Status</th>
-            <th className="p-3 border">Coordinates</th> {/* 👈 nueva columna */}
             <th className="p-3 border">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {currentBikes.map((b) => (
-            <tr key={b.id} className="hover:bg-gray-50">
-              <td className="p-3 border">{b.id}</td>
-              <td className="p-3 border">{b.name}</td>
-              <td className="p-3 border">{b.status}</td>
-              <td className="p-3 border">
-                Lat: {b.lat}, Lng: {b.lng} {/* 👈 mostramos coordenadas */}
-              </td>
+          {currentUsers.map((u) => (
+            <tr key={u.id} className="hover:bg-gray-50">
+              <td className="p-3 border">{u.id}</td>
+              <td className="p-3 border">{u.name}</td>
+              <td className="p-3 border">{u.email}</td>
+              <td className="p-3 border">{u.status}</td>
               <td className="p-3 border flex space-x-3">
                 <button
-                  onClick={() => handleEditClick(b)}
+                  onClick={() => handleEditClick(u)}
                   className="text-blue-500 hover:text-blue-700"
                   title="Edit"
                 >
                   <PencilIcon className="h-5 w-5" />
                 </button>
                 <button
-                  onClick={() => deleteBike(b.id)}
+                  onClick={() => deleteUser(u.id)}
                   className="text-red-500 hover:text-red-700"
                   title="Delete"
                 >
                   <TrashIcon className="h-5 w-5" />
                 </button>
                 <button
-                  onClick={() => disableBike(b.id)}
+                  onClick={() => disableUser(u.id)}
                   className="text-yellow-500 hover:text-yellow-700"
                   title="Disable"
                 >
@@ -104,7 +103,9 @@ export default function BikesList() {
           Anterior
         </button>
 
-        <span>Página {currentPage} de {totalPages}</span>
+        <span>
+          Página {currentPage} de {totalPages}
+        </span>
 
         <button
           disabled={currentPage === totalPages}
@@ -116,13 +117,13 @@ export default function BikesList() {
       </div>
 
       {/* Modals */}
-      <EditModal
+      <EditUserModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        bike={selectedBike}
+        user={selectedUser}
         onSave={handleSaveEdit}
       />
-      <AddBikeModal
+      <AddUserModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSave={handleSaveNew}

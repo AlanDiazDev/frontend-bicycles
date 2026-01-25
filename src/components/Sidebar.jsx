@@ -30,6 +30,9 @@ export default function Sidebar() {
         <li>
           <Link to="/stations" className="hover:bg-gray-700 p-2 rounded block">Stations</Link>
         </li>
+        <li>
+          <Link to="/users" className="hover:bg-gray-700 p-2 rounded block">Users</Link>
+        </li>
       </ul>
     </div>
   );
