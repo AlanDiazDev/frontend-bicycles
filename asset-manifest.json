@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/AlanDiazDev/frontend-bicycles/static/css/main.51018dbf.css",
-    "main.js": "/AlanDiazDev/frontend-bicycles/static/js/main.8eda507d.js",
+    "main.js": "/AlanDiazDev/frontend-bicycles/static/js/main.34c03a62.js",
     "static/js/453.3345f3ee.chunk.js": "/AlanDiazDev/frontend-bicycles/static/js/453.3345f3ee.chunk.js",
     "index.html": "/AlanDiazDev/frontend-bicycles/index.html",
     "main.51018dbf.css.map": "/AlanDiazDev/frontend-bicycles/static/css/main.51018dbf.css.map",
-    "main.8eda507d.js.map": "/AlanDiazDev/frontend-bicycles/static/js/main.8eda507d.js.map",
+    "main.34c03a62.js.map": "/AlanDiazDev/frontend-bicycles/static/js/main.34c03a62.js.map",
     "453.3345f3ee.chunk.js.map": "/AlanDiazDev/frontend-bicycles/static/js/453.3345f3ee.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.51018dbf.css",
-    "static/js/main.8eda507d.js"
+    "static/js/main.34c03a62.js"
   ]
 }
