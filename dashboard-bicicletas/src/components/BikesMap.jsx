@@ -1,10 +1,10 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, Marker, InfoWindow, useJsApiLoader, MarkerClusterer } from '@react-google-maps/api';
 
 export default function BikesMap({ bikes, onEditBike, onDisableBike, onDeleteBike }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+    googleMapsApiKey: "api key"
   });
 
   const [selectedBike, setSelectedBike] = useState(null);
@@ -21,39 +21,23 @@ export default function BikesMap({ bikes, onEditBike, onDisableBike, onDeleteBik
 
   if (!isLoaded) return <p>Cargando mapa...</p>;
 
-//   const getIconByStatus = (status) => {
-//     let color;
-//     switch (status) {
-//       case "Available": color = "green"; break;
-//       case "Rented": color = "red"; break;
-//       case "Disabled": color = "gray"; break;
-//       default: color = "blue";
-//     }
-//     return {
-//       path: window.google.maps.SymbolPath.CIRCLE,
-//       fillColor: color,
-//       fillOpacity: 0.9,
-//       strokeColor: "white",
-//       strokeWeight: 1,
-//       scale: 8,
-//     };
-//   };
-
-const getIconByStatus = (status) => {
-  let url;
-  switch (status) {
-    case "Available": url = "/icons/bike-green.png"; break;
-    case "Rented": url = "/icons/bike-red.png"; break;
-    case "Disabled": url = "/icons/bike-gray.png"; break;
-    default: url = "/icons/bike-blue.png";
-  }
-  return {
-    url,
-    scaledSize: new window.google.maps.Size(32, 32),
-    anchor: new window.google.maps.Point(16, 16),
+  const getIconByStatus = (status) => {
+    let color;
+    switch (status) {
+      case "Available": color = "green"; break;
+      case "Rented": color = "red"; break;
+      case "Disabled": color = "gray"; break;
+      default: color = "blue";
+    }
+    return {
+      path: window.google.maps.SymbolPath.CIRCLE,
+      fillColor: color,
+      fillOpacity: 0.9,
+      strokeColor: "white",
+      strokeWeight: 1,
+      scale: 8,
+    };
   };
-};
-
 
   return (
     <div className="bg-white border rounded-lg shadow p-6">
@@ -62,14 +46,19 @@ const getIconByStatus = (status) => {
         mapContainerStyle={{ width: '100%', height: '400px' }}
         onLoad={onLoad}
       >
-        {bikes.map((b) => (
-          <Marker
-            key={b.id}
-            position={{ lat: b.lat, lng: b.lng }}
-            icon={getIconByStatus(b.status)}
-            onClick={() => setSelectedBike(b)}
-          />
-        ))}
+        <MarkerClusterer>
+          {(clusterer) =>
+            bikes.map((b) => (
+              <Marker
+                key={b.id}
+                position={{ lat: b.lat, lng: b.lng }}
+                icon={getIconByStatus(b.status)}
+                clusterer={clusterer}
+                onClick={() => setSelectedBike(b)}
+              />
+            ))
+          }
+        </MarkerClusterer>
 
         {selectedBike && (
           <InfoWindow

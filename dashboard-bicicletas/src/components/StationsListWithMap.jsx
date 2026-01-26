@@ -26,7 +26,7 @@ export default function StationsListWithMap() {
     // Configuración del mapa
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY // reemplazar con tu API key
+        googleMapsApiKey: "api key" // reemplazar con tu API key
     });
 
     // Coordenadas de General Pico, La Pampa
@@ -53,12 +53,12 @@ export default function StationsListWithMap() {
             {/* Tabla de estaciones */}
             <div className="bg-white border rounded-lg shadow p-6">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xl font-semibold">Estaciones</h3>
+                    <h3 className="text-xl font-semibold">Stations</h3>
                     <button
                         onClick={() => setIsAddModalOpen(true)}
                         className="flex items-center px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                     >
-                        <PlusIcon className="h-5 w-5 mr-1" /> Agregar Estacion
+                        <PlusIcon className="h-5 w-5 mr-1" /> Add Station
                     </button>
                 </div>
 
@@ -120,7 +120,7 @@ export default function StationsListWithMap() {
             {/* Mapa de Google con estaciones de la página actual */}
             {isLoaded && (
                 <div className="bg-white border rounded-lg shadow p-6">
-                    <h3 className="text-xl font-semibold mb-4">Mapa de Estaciones</h3>
+                    <h3 className="text-xl font-semibold mb-4">Stations Map</h3>
                     <GoogleMap
                         mapContainerStyle={{ width: '100%', height: '400px' }}
                         center={center}
@@ -132,7 +132,7 @@ export default function StationsListWithMap() {
                                 key={s.id}
                                 position={{ lat: parseFloat(s.lat), lng: parseFloat(s.lng) }}
                                 icon={{
-                                    url: "/icons/estacion-bici.png",
+                                    url: "/icons/bike-station.png",
                                     scaledSize: new window.google.maps.Size(40, 40), // tamaño
                                 }}
                             />
