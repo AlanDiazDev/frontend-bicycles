@@ -26,7 +26,7 @@ export default function StationsListWithMap() {
     // Configuración del mapa
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: "api key" // reemplazar con tu API key
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY // reemplazar con tu API key
     });
 
     // Coordenadas de General Pico, La Pampa

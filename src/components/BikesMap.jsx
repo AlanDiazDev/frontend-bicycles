@@ -4,7 +4,7 @@ import { GoogleMap, Marker, InfoWindow, useJsApiLoader, MarkerClusterer } from '
 export default function BikesMap({ bikes, onEditBike, onDisableBike, onDeleteBike }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "api key"
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
   });
 
   const [selectedBike, setSelectedBike] = useState(null);

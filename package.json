@@ -1,6 +1,5 @@
 {
   "name": "dashboard-bicicletas",
-  "homepage": "https://github.com/AlanDiazDev/frontend-bicycles",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
