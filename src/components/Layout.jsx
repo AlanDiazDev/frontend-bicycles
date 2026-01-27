@@ -5,10 +5,24 @@ import UsersList from './UsersList';
 import BikesList from './BikesList';
 import PaymentsList from './PaymentsList';
 import StationsListWithMap from './StationsListWithMap';
-import { Bars3Icon, XMarkIcon, HomeIcon, UsersIcon, CogIcon, MapIcon, CurrencyDollarIcon } from '@heroicons/react/24/solid';
+import ScootersList from './ScootersList';
+import CarsList from './CarsList';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBicycle, faPersonSkating, faRoute, faCar } from '@fortawesome/free-solid-svg-icons'
+
+import {
+  Bars3Icon,
+  XMarkIcon,
+  HomeIcon,
+  UsersIcon,
+  MapIcon,
+  CurrencyDollarIcon,
+} from '@heroicons/react/24/solid';
 
 export default function Layout() {
   const [isOpen, setIsOpen] = useState(true);
+  const [mobilityOpen, setMobilityOpen] = useState(false);
 
   return (
     <div className="flex h-screen">
@@ -26,79 +40,73 @@ export default function Layout() {
 
         <nav className="mt-6 space-y-2">
           {/* Dashboard */}
-          <div className="relative group">
-            <NavLink to="/" end className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
-            }>
-              <HomeIcon className="h-5 w-5" />
-              {isOpen && <span className="ml-2">Dashboard</span>}
-            </NavLink>
-            {!isOpen && (
-              <span className="absolute left-full ml-2 px-2 py-1 bg-black text-white text-xs rounded transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                Dashboard
-              </span>
-            )}
-          </div>
+          <NavLink to="/" end className={({ isActive }) =>
+            `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
+          }>
+            <HomeIcon className="h-5 w-5" />
+            {isOpen && <span className="ml-2">Dashboard</span>}
+          </NavLink>
 
           {/* Users */}
-          <div className="relative group">
-            <NavLink to="/users" className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
-            }>
-              <UsersIcon className="h-5 w-5" />
-              {isOpen && <span className="ml-2">Usuarios</span>}
-            </NavLink>
-            {!isOpen && (
-              <span className="absolute left-full ml-2 px-2 py-1 bg-black text-white text-xs rounded transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                Usuarios
-              </span>
-            )}
-          </div>
+          <NavLink to="/users" className={({ isActive }) =>
+            `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
+          }>
+            <UsersIcon className="h-5 w-5" />
+            {isOpen && <span className="ml-2">Usuarios</span>}
+          </NavLink>
 
-          {/* Bikes */}
+          {/* Movilidad (submenu) */}
           <div className="relative group">
-            <NavLink to="/bikes" className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
-            }>
-              <CogIcon className="h-5 w-5" />
-              {isOpen && <span className="ml-2">Bicicletas</span>}
-            </NavLink>
-            {!isOpen && (
-              <span className="absolute left-full ml-2 px-2 py-1 bg-black text-white text-xs rounded transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                Bicicletas
-              </span>
+            <button
+              onClick={() => setMobilityOpen(!mobilityOpen)}
+              className="flex items-center w-full px-4 py-2 rounded hover:bg-gray-700 focus:outline-none"
+            >
+              {/* <CogIcon className="h-5 w-5" /> */}
+              <FontAwesomeIcon icon={faRoute} />
+              {isOpen && <span className="ml-2">Movilidad</span>}
+            </button>
+            {mobilityOpen && isOpen && (
+              <div className="ml-8 mt-2 space-y-1">
+                <NavLink to="/bikes" className={({ isActive }) =>
+                  `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
+                }>
+                  {/* <AcademicCapIcon className="h-5 w-5" /> */}
+                  <FontAwesomeIcon icon={faBicycle} />
+                  <span className="ml-2">Bicicletas</span>
+                </NavLink>
+                <NavLink to="/scooters" className={({ isActive }) =>
+                  `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
+                }>
+                  {/* <RocketLaunchIcon className="h-5 w-5" /> */}
+                  <FontAwesomeIcon icon={faPersonSkating} />
+                  <span className="ml-2">Monopatines</span>
+                </NavLink>
+                <NavLink to="/cars" className={({ isActive }) =>
+                  `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
+                }>
+                  {/* <TruckIcon className="h-5 w-5" /> */}
+                  <FontAwesomeIcon icon={faCar} />
+                  <span className="ml-2">Automotores</span>
+                </NavLink>
+              </div>
             )}
           </div>
 
           {/* Stations */}
-          <div className="relative group">
-            <NavLink to="/stations" className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
-            }>
-              <MapIcon className="h-5 w-5" />
-              {isOpen && <span className="ml-2">Estaciones</span>}
-            </NavLink>
-            {!isOpen && (
-              <span className="absolute left-full ml-2 px-2 py-1 bg-black text-white text-xs rounded transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                Estaciones
-              </span>
-            )}
-          </div>
+          <NavLink to="/stations" className={({ isActive }) =>
+            `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
+          }>
+            <MapIcon className="h-5 w-5" />
+            {isOpen && <span className="ml-2">Estaciones</span>}
+          </NavLink>
 
           {/* Payments */}
-          <div className="relative group">
-            <NavLink to="/payments" className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
-            }>
-              <CurrencyDollarIcon className="h-5 w-5" />
-              {isOpen && <span className="ml-2">Pagos</span>}
-            </NavLink>
-            {!isOpen && (
-              <span className="absolute left-full ml-2 px-2 py-1 bg-black text-white text-xs rounded transform -translate-x-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                Pagos
-              </span>
-            )}
-          </div>
+          <NavLink to="/payments" className={({ isActive }) =>
+            `flex items-center px-4 py-2 rounded ${isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`
+          }>
+            <CurrencyDollarIcon className="h-5 w-5" />
+            {isOpen && <span className="ml-2">Pagos</span>}
+          </NavLink>
         </nav>
       </aside>
 
@@ -121,6 +129,8 @@ export default function Layout() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/users" element={<UsersList />} />
           <Route path="/bikes" element={<BikesList />} />
+          <Route path="/scooters" element={<ScootersList />} />
+          <Route path="/cars" element={<CarsList />} />
           <Route path="/stations" element={<StationsListWithMap />} />
           <Route path="/payments" element={<PaymentsList />} />
         </Routes>

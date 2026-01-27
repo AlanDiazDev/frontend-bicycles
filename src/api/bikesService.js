@@ -63,22 +63,33 @@ let bikes = [
 
 ];
 
-// Simulamos funciones asincrónicas como si fueran llamadas a la API
+// Obtener lista
 export const getBikes = async () => {
   return bikes;
 };
 
+// Editar
 export const editBike = async (id, payload) => {
   bikes = bikes.map(b => b.id === id ? { ...b, ...payload } : b);
   return bikes.find(b => b.id === id);
 };
 
+// Eliminar
 export const deleteBike = async (id) => {
   bikes = bikes.filter(b => b.id !== id);
   return id;
 };
 
+// Deshabilitar
 export const disableBike = async (id) => {
   bikes = bikes.map(b => b.id === id ? { ...b, status: "Disabled" } : b);
   return bikes.find(b => b.id === id);
+};
+
+// Agregar nuevo (ID = maxId + 1)
+export const addBike = async (payload) => {
+  const nextId = bikes.length > 0 ? Math.max(...bikes.map(b => b.id)) + 1 : 1;
+  const newBike = { id: nextId, ...payload };
+  bikes.push(newBike);
+  return newBike;
 };

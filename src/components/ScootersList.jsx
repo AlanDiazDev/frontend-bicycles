@@ -1,55 +1,54 @@
-import { useBikes } from '../hooks/useBikes';
-import { PencilIcon, TrashIcon, XCircleIcon, PlusIcon } from '@heroicons/react/24/solid';
-import EditModal from './EditModal';
-import AddBikeModal from './AddBikeModal';
 import React, { useState } from 'react';
+import { useScooters } from '../hooks/useScooters';
+import { PencilIcon, TrashIcon, XCircleIcon, PlusIcon } from '@heroicons/react/24/solid';
+import EditScooterModal from './EditScooterModal';
+import AddScooterModal from './AddScooterModal';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 
-export default function BikesList() {
-  const { data: bikes = [], isLoading, editBike, deleteBike, disableBike, addBike } = useBikes();
-  const [selectedBike, setSelectedBike] = useState(null);
+export default function ScootersList() {
+  const { data: scooters = [], isLoading, editScooter, deleteScooter, disableScooter, addScooter } = useScooters();
+  const [selectedScooter, setSelectedScooter] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // Estado para paginado
+  // paginado
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 10;
-  const totalPages = Math.ceil(bikes.length / recordsPerPage);
-
+  const recordsPerPage = 5;
+  const totalPages = Math.ceil(scooters.length / recordsPerPage);
   const indexOfLast = currentPage * recordsPerPage;
   const indexOfFirst = indexOfLast - recordsPerPage;
-  const currentBikes = bikes.slice(indexOfFirst, indexOfLast);
+  const currentScooters = scooters.slice(indexOfFirst, indexOfLast);
 
-  // Google Maps
+  // mapa
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
   });
   const center = { lat: -35.6593, lng: -63.7579 };
 
-  if (isLoading) return <p>Loading bikes...</p>;
+  if (isLoading) return <p>Loading scooters...</p>;
 
-  const handleEditClick = (bike) => {
-    setSelectedBike(bike);
+  const handleEditClick = (scooter) => {
+    setSelectedScooter(scooter);
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEdit = (updatedBike) => {
-    editBike({ id: updatedBike.id, payload: updatedBike });
+  const handleSaveEdit = (updatedScooter) => {
+    editScooter({ id: updatedScooter.id, payload: updatedScooter });
   };
 
-  const handleSaveNew = (newBike) => {
-    addBike(newBike);
+  const handleSaveNew = (newScooter) => {
+    addScooter(newScooter);
   };
 
-  // Íconos según estado
-  const getBikeIconByStatus = (status) => {
+  // íconos según estado
+  const getScooterIconByStatus = (status) => {
     let url;
     switch (status) {
-      case "Available": url = "/icons/bike-green.png"; break;
-      case "Rented": url = "/icons/bike-red.png"; break;
-      case "Disabled": url = "/icons/bike-gray.png"; break;
-      default: url = "/icons/bike-blue.png";
+      case "Available": url = "/scooter-green.svg"; break;
+      case "Rented": url = "/scooter-red.svg"; break;
+      case "Disabled": url = "/scooter-gray.svg"; break;
+      default: url = "/scooter-blue.svg";
     }
     return {
       url,
@@ -60,15 +59,15 @@ export default function BikesList() {
 
   return (
     <div className="space-y-6">
-      {/* Tabla */}
+      {/* tabla */}
       <div className="bg-white border rounded-lg shadow p-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold">Bikes</h3>
+          <h3 className="text-xl font-semibold">Scooters</h3>
           <button
             onClick={() => setIsAddModalOpen(true)}
             className="flex items-center px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           >
-            <PlusIcon className="h-5 w-5 mr-1" /> Add Bike
+            <PlusIcon className="h-5 w-5 mr-1" /> Add Scooter
           </button>
         </div>
 
@@ -83,20 +82,20 @@ export default function BikesList() {
             </tr>
           </thead>
           <tbody>
-            {currentBikes.map((b) => (
-              <tr key={b.id} className="hover:bg-gray-50">
-                <td className="p-3 border">{b.id}</td>
-                <td className="p-3 border">{b.name}</td>
-                <td className="p-3 border">{b.status}</td>
-                <td className="p-3 border">Lat: {b.lat}, Lng: {b.lng}</td>
+            {currentScooters.map((s) => (
+              <tr key={s.id} className="hover:bg-gray-50">
+                <td className="p-3 border">{s.id}</td>
+                <td className="p-3 border">{s.name}</td>
+                <td className="p-3 border">{s.status}</td>
+                <td className="p-3 border">Lat: {s.lat}, Lng: {s.lng}</td>
                 <td className="p-3 border flex space-x-3">
-                  <button onClick={() => handleEditClick(b)} className="text-blue-500 hover:text-blue-700" title="Edit">
+                  <button onClick={() => handleEditClick(s)} className="text-blue-500 hover:text-blue-700" title="Edit">
                     <PencilIcon className="h-5 w-5" />
                   </button>
-                  <button onClick={() => deleteBike(b.id)} className="text-red-500 hover:text-red-700" title="Delete">
+                  <button onClick={() => deleteScooter(s.id)} className="text-red-500 hover:text-red-700" title="Delete">
                     <TrashIcon className="h-5 w-5" />
                   </button>
-                  <button onClick={() => disableBike(b.id)} className="text-yellow-500 hover:text-yellow-700" title="Disable">
+                  <button onClick={() => disableScooter(s.id)} className="text-yellow-500 hover:text-yellow-700" title="Disable">
                     <XCircleIcon className="h-5 w-5" />
                   </button>
                 </td>
@@ -105,7 +104,7 @@ export default function BikesList() {
           </tbody>
         </table>
 
-        {/* Paginado */}
+        {/* paginado */}
         <div className="flex justify-between items-center mt-4">
           <button
             disabled={currentPage === 1}
@@ -125,48 +124,48 @@ export default function BikesList() {
         </div>
       </div>
 
-      {/* Mapa con InfoWindow */}
+      {/* mapa con InfoWindow */}
       {isLoaded && (
         <div className="bg-white border rounded-lg shadow p-6">
-          <h3 className="text-xl font-semibold mb-4">Mapa de Bicicletas</h3>
+          <h3 className="text-xl font-semibold mb-4">Mapa de Scooters</h3>
           <GoogleMap
             mapContainerStyle={{ width: '100%', height: '400px' }}
             center={center}
             zoom={14}
           >
-            {currentBikes.map((b) => (
+            {currentScooters.map((s) => (
               <Marker
-                key={b.id}
-                position={{ lat: parseFloat(b.lat), lng: parseFloat(b.lng) }}
-                icon={getBikeIconByStatus(b.status)}
-                onClick={() => setSelectedBike(b)}
+                key={s.id}
+                position={{ lat: parseFloat(s.lat), lng: parseFloat(s.lng) }}
+                icon={getScooterIconByStatus(s.status)}
+                onClick={() => setSelectedScooter(s)}
               />
             ))}
 
-            {selectedBike && (
+            {selectedScooter && (
               <InfoWindow
-                position={{ lat: parseFloat(selectedBike.lat), lng: parseFloat(selectedBike.lng) }}
-                onCloseClick={() => setSelectedBike(null)}
+                position={{ lat: parseFloat(selectedScooter.lat), lng: parseFloat(selectedScooter.lng) }}
+                onCloseClick={() => setSelectedScooter(null)}
               >
                 <div className="text-sm">
-                  <h4 className="font-semibold">{selectedBike.name}</h4>
-                  <p>Estado: {selectedBike.status}</p>
-                  <p>Lat: {selectedBike.lat}, Lng: {selectedBike.lng}</p>
+                  <h4 className="font-semibold">{selectedScooter.name}</h4>
+                  <p>Estado: {selectedScooter.status}</p>
+                  <p>Lat: {selectedScooter.lat}, Lng: {selectedScooter.lng}</p>
                   <div className="flex space-x-2 mt-2">
                     <button
-                      onClick={() => handleEditClick(selectedBike)}
+                      onClick={() => handleEditClick(selectedScooter)}
                       className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                     >
                       Editar
                     </button>
                     <button
-                      onClick={() => disableBike(selectedBike.id)}
+                      onClick={() => disableScooter(selectedScooter.id)}
                       className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                     >
                       Deshabilitar
                     </button>
                     <button
-                      onClick={() => deleteBike(selectedBike.id)}
+                      onClick={() => deleteScooter(selectedScooter.id)}
                       className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                     >
                       Eliminar
@@ -179,14 +178,14 @@ export default function BikesList() {
         </div>
       )}
 
-      {/* Modals */}
-      <EditModal
+      {/* modals */}
+      <EditScooterModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        bike={selectedBike}
+        scooter={selectedScooter}
         onSave={handleSaveEdit}
       />
-      <AddBikeModal
+      <AddScooterModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSave={handleSaveNew}

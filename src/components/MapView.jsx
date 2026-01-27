@@ -30,4 +30,3 @@ export default function MapView() {
     </div>
   );
 }
-////AIzaSyDgNY-I2r_7XcPS-OJcex2e-B0zZZksdX8

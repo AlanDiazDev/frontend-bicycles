@@ -1,11 +1,11 @@
 import React from 'react';
 
-export default function EditBikeModal({ isOpen, onClose, bike, onSave }) {
-  const [formData, setFormData] = React.useState(bike || {});
+export default function EditCarModal({ isOpen, onClose, car, onSave }) {
+  const [formData, setFormData] = React.useState(car || {});
 
   React.useEffect(() => {
-    setFormData(bike || {});
-  }, [bike]);
+    setFormData(car || {});
+  }, [car]);
 
   if (!isOpen) return null;
 
@@ -22,7 +22,7 @@ export default function EditBikeModal({ isOpen, onClose, bike, onSave }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-        <h2 className="text-xl font-semibold mb-4">Edit Bike</h2>
+        <h2 className="text-xl font-semibold mb-4">Edit Car</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium">Name</label>
