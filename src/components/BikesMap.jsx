@@ -42,10 +42,10 @@ export default function BikesMap({ bikes, onEditBike, onDisableBike, onDeleteBik
 const getIconByStatus = (status) => {
   let url;
   switch (status) {
-    case "Available": url = "/icons/bike-green.png"; break;
-    case "Rented": url = "/icons/bike-red.png"; break;
-    case "Disabled": url = "/icons/bike-gray.png"; break;
-    default: url = "/icons/bike-blue.png";
+    case "Available": url = "/bike-green.png"; break;
+    case "Rented": url = "/bike-red.png"; break;
+    case "Disabled": url = "/bike-gray.png"; break;
+    default: url = "/bike-blue.png";
   }
   return {
     url,

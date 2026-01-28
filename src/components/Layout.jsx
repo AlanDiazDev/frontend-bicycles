@@ -98,7 +98,7 @@ export default function Layout() {
           ${isOpen ? 'ml-64' : 'ml-16'}`}
       >
         <h1 className="ml-4 text-lg font-semibold flex items-center">
-          <img src="/icons/general-pico-logo.png" alt="Logo General Pico" className="h-10 w-10 md:h-12 md:w-12" />
+          <img src="/general-pico-logo.png" alt="Logo General Pico" className="h-10 w-10 md:h-12 md:w-12" />
         </h1>
       </header>
 

@@ -132,7 +132,7 @@ export default function StationsListWithMap() {
                                 key={s.id}
                                 position={{ lat: parseFloat(s.lat), lng: parseFloat(s.lng) }}
                                 icon={{
-                                    url: "/icons/bike-station.png",
+                                    url: "/bike-station.png",
                                     scaledSize: new window.google.maps.Size(40, 40), // tamaño
                                 }}
                             />
