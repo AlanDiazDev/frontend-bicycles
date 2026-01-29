@@ -52,16 +52,16 @@ let bikes = [
   { id: 22, name: "Bike #22", status: "Disabled", lat: -35.6567, lng: -63.7547, stationId: 9 },
   { id: 23, name: "Bike #23", status: "Available", lat: -35.6620, lng: -63.7620, stationId: 10 },
   { id: 24, name: "Bike #24", status: "Disabled", lat: -35.6621, lng: -63.7621, stationId: 10 },
-
-  // Bicis rentadas distribuidas por General Pico
-{ id: 25, name: "Bike #25", status: "Rented", lat: -35.6600, lng: -63.7580, stationId: 1 }, 
-{ id: 26, name: "Bike #26", status: "Rented", lat: -35.6610, lng: -63.7590, stationId: 2 }, 
-{ id: 27, name: "Bike #27", status: "Rented", lat: -35.6620, lng: -63.7575, stationId: 3 }, 
-{ id: 28, name: "Bike #28", status: "Rented", lat: -35.6630, lng: -63.7585, stationId: 4 }, 
-{ id: 29, name: "Bike #29", status: "Rented", lat: -35.6640, lng: -63.7595, stationId: 5 }, 
-{ id: 30, name: "Bike #30", status: "Rented", lat: -35.6650, lng: -63.7600, stationId: 6 }, 
-
+  
+  // Bicis rentadas distribuidas por General Pico (mezcla cerca/lejos)
+  { id: 25, name: "Bike #25", status: "Rented", lat: -35.6600, lng: -63.7580, stationId: null }, // cerca del centro
+  { id: 26, name: "Bike #26", status: "Rented", lat: -35.6612, lng: -63.7595, stationId: null }, // 3-4 cuadras
+  { id: 27, name: "Bike #27", status: "Rented", lat: -35.6628, lng: -63.7565, stationId: null }, // 6-7 cuadras
+  { id: 28, name: "Bike #28", status: "Rented", lat: -35.6645, lng: -63.7610, stationId: null }, // 8-9 cuadras
+  { id: 29, name: "Bike #29", status: "Rented", lat: -35.6680, lng: -63.7635, stationId: null }, // 12 cuadras
+  { id: 30, name: "Bike #30", status: "Rented", lat: -35.6715, lng: -63.7505, stationId: null }, // 15 cuadras
 ];
+
 
 // Obtener lista
 export const getBikes = async () => {

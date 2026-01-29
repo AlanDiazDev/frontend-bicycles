@@ -14,10 +14,31 @@ export default function ScootersList() {
   // paginado
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 5;
-  const totalPages = Math.ceil(scooters.length / recordsPerPage);
+
+  // orden dinámico
+  const [sortBy, setSortBy] = useState("name");
+  const [sortOrder, setSortOrder] = useState("asc");
+
+  // toggle mapa
+  const [showAllMarkers, setShowAllMarkers] = useState(true);
+
+  const sortRecords = (list) => {
+    return [...list].sort((a, b) => {
+      let valA = a[sortBy];
+      let valB = b[sortBy];
+      if (typeof valA === "string") valA = valA.toLowerCase();
+      if (typeof valB === "string") valB = valB.toLowerCase();
+      if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+      if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const sortedScooters = sortRecords(scooters);
+  const totalPages = Math.ceil(sortedScooters.length / recordsPerPage);
   const indexOfLast = currentPage * recordsPerPage;
   const indexOfFirst = indexOfLast - recordsPerPage;
-  const currentScooters = scooters.slice(indexOfFirst, indexOfLast);
+  const currentScooters = sortedScooters.slice(indexOfFirst, indexOfLast);
 
   // mapa
   const { isLoaded } = useJsApiLoader({
@@ -57,18 +78,31 @@ export default function ScootersList() {
     };
   };
 
+  const markersToShow = showAllMarkers ? sortedScooters : currentScooters;
+
   return (
     <div className="space-y-6">
       {/* tabla */}
       <div className="bg-white border rounded-lg shadow p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">Scooters</h3>
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          >
-            <PlusIcon className="h-5 w-5 mr-1" /> Add Scooter
-          </button>
+          <div className="flex space-x-2">
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border rounded px-2 py-1">
+              <option value="name">Name</option>
+              <option value="status">Status</option>
+              <option value="id">ID</option>
+            </select>
+            <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} className="border rounded px-2 py-1">
+              <option value="asc">Ascendente</option>
+              <option value="desc">Descendente</option>
+            </select>
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="flex items-center px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              <PlusIcon className="h-5 w-5 mr-1" /> Add Scooter
+            </button>
+          </div>
         </div>
 
         <table className="min-w-full border-collapse">
@@ -86,7 +120,17 @@ export default function ScootersList() {
               <tr key={s.id} className="hover:bg-gray-50">
                 <td className="p-3 border">{s.id}</td>
                 <td className="p-3 border">{s.name}</td>
-                <td className="p-3 border">{s.status}</td>
+                <td
+                  className={`p-3 border text-center font-semibold ${
+                    s.status === "Available"
+                      ? "bg-green-100 text-green-700"
+                      : s.status === "Rented"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {s.status}
+                </td>
                 <td className="p-3 border">Lat: {s.lat}, Lng: {s.lng}</td>
                 <td className="p-3 border flex space-x-3">
                   <button onClick={() => handleEditClick(s)} className="text-blue-500 hover:text-blue-700" title="Edit">
@@ -124,16 +168,27 @@ export default function ScootersList() {
         </div>
       </div>
 
-      {/* mapa con InfoWindow */}
+      {/* mapa con toggle */}
       {isLoaded && (
         <div className="bg-white border rounded-lg shadow p-6">
-          <h3 className="text-xl font-semibold mb-4">Mapa de Scooters</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold">Mapa de Scooters</h3>
+            <button
+              onClick={() => setShowAllMarkers(!showAllMarkers)}
+              className={`px-3 py-1 rounded ${
+                showAllMarkers ? "bg-blue-500 text-white" : "bg-gray-300"
+              }`}
+            >
+              {showAllMarkers ? "Todos los registros" : "Solo página actual"}
+            </button>
+          </div>
+
           <GoogleMap
             mapContainerStyle={{ width: '100%', height: '400px' }}
             center={center}
             zoom={14}
-          >
-            {currentScooters.map((s) => (
+                    >
+            {markersToShow.map((s) => (
               <Marker
                 key={s.id}
                 position={{ lat: parseFloat(s.lat), lng: parseFloat(s.lng) }}
@@ -151,6 +206,7 @@ export default function ScootersList() {
                   <h4 className="font-semibold">{selectedScooter.name}</h4>
                   <p>Estado: {selectedScooter.status}</p>
                   <p>Lat: {selectedScooter.lat}, Lng: {selectedScooter.lng}</p>
+
                   <div className="flex space-x-2 mt-2">
                     <button
                       onClick={() => handleEditClick(selectedScooter)}
@@ -165,7 +221,12 @@ export default function ScootersList() {
                       Deshabilitar
                     </button>
                     <button
-                      onClick={() => deleteScooter(selectedScooter.id)}
+                      onClick={() => {
+                        if (window.confirm("¿Seguro que quieres eliminar este scooter?")) {
+                          deleteScooter(selectedScooter.id);
+                          setSelectedScooter(null);
+                        }
+                      }}
                       className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                     >
                       Eliminar

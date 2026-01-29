@@ -13,7 +13,9 @@ import { useStations } from '../hooks/useStations';
 import { usePayments } from '../hooks/usePayments';
 
 // Importar íconos
-import { UserIcon, CogIcon, MapIcon, CurrencyDollarIcon } from '@heroicons/react/24/solid';
+import { UserIcon, MapIcon, CurrencyDollarIcon } from '@heroicons/react/24/solid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBicycle } from '@fortawesome/free-solid-svg-icons';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('stats');
@@ -72,14 +74,14 @@ export default function Dashboard() {
           onClick={() => setActiveTab('bikes')}
           className={`flex items-center px-4 py-2 rounded ${activeTab === 'bikes' ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
         >
-          <CogIcon className="h-5 w-5 mr-2" /> Bicis
+          <FontAwesomeIcon icon={faBicycle} className="h-5 w-5 mr-2" style={{color: "#0a0a0a",}} /> Bicicletas
         </button>
-        <button
+        {/* <button
           onClick={() => setActiveTab('bikesmap')}
           className={`flex items-center px-4 py-2 rounded ${activeTab === 'bikesmap' ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
         >
           <MapIcon className="h-5 w-5 mr-2" /> Mapa Bicis
-        </button>
+        </button> */}
         <button
           onClick={() => setActiveTab('stations')}
           className={`flex items-center px-4 py-2 rounded ${activeTab === 'stations' ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}

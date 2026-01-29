@@ -1,89 +1,110 @@
-import React from 'react';
+import React from "react";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 
 export default function AddScooterModal({ isOpen, onClose, onSave }) {
-    const [formData, setFormData] = React.useState({
-        name: "",
-        status: "Available",
-        lat: "",
-        lng: "",
+  const [formData, setFormData] = React.useState({
+    name: "",
+    status: "Available",
+    lat: null,
+    lng: null,
+  });
+
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  });
+
+  if (!isOpen) return null;
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleMapClick = (e) => {
+    setFormData({
+      ...formData,
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng(),
     });
+  };
 
-    if (!isOpen) return null;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave({
+      ...formData,
+      lat: parseFloat(formData.lat),
+      lng: parseFloat(formData.lng),
+    });
+    onClose();
+  };
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-[600px]">
+        <h2 className="text-xl font-semibold mb-4">Agregar Scooter</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Nombre</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+              required
+            />
+          </div>
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSave(formData); // el service se encarga de asignar el ID
-        onClose();
-    };
+          <div>
+            <label className="block text-sm font-medium">Estado</label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+            >
+              <option value="Available">Disponible</option>
+              <option value="Rented">Ocupado</option>
+              <option value="Disabled">Deshabilitado</option>
+            </select>
+          </div>
 
-
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-96">
-                <h2 className="text-xl font-semibold mb-4">Add New Scooter</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium">Name</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            className="w-full border rounded px-3 py-2"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium">Status</label>
-                        <select
-                            name="status"
-                            value={formData.status}
-                            onChange={handleChange}
-                            className="w-full border rounded px-3 py-2"
-                        >
-                            <option value="Available">Available</option>
-                            <option value="Rented">Rented</option>
-                            <option value="Disabled">Disabled</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium">Latitude</label>
-                        <input
-                            type="number"
-                            step="any"
-                            name="lat"
-                            value={formData.lat}
-                            onChange={handleChange}
-                            className="w-full border rounded px-3 py-2"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium">Longitude</label>
-                        <input
-                            type="number"
-                            step="any"
-                            name="lng"
-                            value={formData.lng}
-                            onChange={handleChange}
-                            className="w-full border rounded px-3 py-2"
-                            required
-                        />
-                    </div>
-                    <div className="flex justify-end space-x-2">
-                        <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
-                            Cancel
-                        </button>
-                        <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                            Create
-                        </button>
-                    </div>
-                </form>
+          {isLoaded && (
+            <div>
+              <label className="block text-sm font-medium mb-2">Ubicación</label>
+              <GoogleMap
+                mapContainerStyle={{ width: "100%", height: "300px" }}
+                center={{
+                  lat: formData.lat ? parseFloat(formData.lat) : -35.6593,
+                  lng: formData.lng ? parseFloat(formData.lng) : -63.7579,
+                }}
+                zoom={14}
+                onClick={handleMapClick}
+              >
+                {formData.lat && formData.lng && (
+                  <Marker position={{ lat: parseFloat(formData.lat), lng: parseFloat(formData.lng) }} />
+                )}
+              </GoogleMap>
+              <p className="text-sm mt-2">
+                Lat: {formData.lat || "—"}, Lng: {formData.lng || "—"}
+              </p>
             </div>
-        </div>
-    );
+          )}
+
+          <div className="flex justify-end space-x-2">
+            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              disabled={!formData.lat || !formData.lng}
+            >
+              Crear
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }

@@ -75,7 +75,11 @@ export default function Layout() {
 
           {/* Movilidad */}
           {isOpen && <div className="px-4 py-2 text-gray-400 uppercase text-xs">Movilidad</div>}
-          <NavItem to="/cars" icon={faCar} label="Automotores" sectionColor="bg-green-600" />
+          {/* <NavItem to="/" icon={faCar} label="Automotores" sectionColor="bg-green-600" /> */}
+          <div className="flex items-center px-4 py-2 text-white rounded-md opacity-50 cursor-not-allowed">
+            <FontAwesomeIcon className="mr-2" icon={faCar} />
+            Automotores
+          </div>
           <NavItem to="/bikes" icon={faBicycle} label="Bicicletas" sectionColor="bg-green-600" />
           <NavItem to="/scooters" icon={faPersonSkating} label="Monopatines" sectionColor="bg-green-600" />
           <NavItem to="/stations" heroIcon={MapIcon} label="Estaciones" sectionColor="bg-green-600" />
