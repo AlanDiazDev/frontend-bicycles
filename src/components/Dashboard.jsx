@@ -11,6 +11,7 @@ import { useUsers } from '../hooks/useUsers';
 import { useBikes } from '../hooks/useBikes';
 import { useStations } from '../hooks/useStations';
 import { usePayments } from '../hooks/usePayments';
+import { useActiveServices } from '../hooks/useActiveServices'; // 👈 nuevo hook
 
 // Importar íconos
 import { UserIcon, MapIcon, CurrencyDollarIcon } from '@heroicons/react/24/solid';
@@ -25,6 +26,7 @@ export default function Dashboard() {
   const { data: bikes = [], disableBike, deleteBike, editBike } = useBikes();
   const { data: stations = [] } = useStations();
   const { data: payments = [] } = usePayments();
+  const { data: activeServices = [] } = useActiveServices(); // 👈 servicios activos
 
   // Estado para modales de bicis
   const [selectedBike, setSelectedBike] = useState(null);
@@ -37,6 +39,7 @@ export default function Dashboard() {
   const availableBikesCount = bikes.filter(b => b.status === "Available").length;
   const stationsCount = stations.length;
   const paymentsCount = payments.length;
+  const activeServicesCount = activeServices.length; // 👈 nuevo cálculo
 
   // Funciones para mapa
   const handleEditBike = (bike) => {
@@ -74,14 +77,8 @@ export default function Dashboard() {
           onClick={() => setActiveTab('bikes')}
           className={`flex items-center px-4 py-2 rounded ${activeTab === 'bikes' ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
         >
-          <FontAwesomeIcon icon={faBicycle} className="h-5 w-5 mr-2" style={{color: "#0a0a0a",}} /> Bicicletas
+          <FontAwesomeIcon icon={faBicycle} className="h-5 w-5 mr-2" style={{color: "#0a0a0a"}} /> Bicicletas
         </button>
-        {/* <button
-          onClick={() => setActiveTab('bikesmap')}
-          className={`flex items-center px-4 py-2 rounded ${activeTab === 'bikesmap' ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
-        >
-          <MapIcon className="h-5 w-5 mr-2" /> Mapa Bicis
-        </button> */}
         <button
           onClick={() => setActiveTab('stations')}
           className={`flex items-center px-4 py-2 rounded ${activeTab === 'stations' ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
@@ -106,6 +103,7 @@ export default function Dashboard() {
             availableBikesCount={availableBikesCount}
             stationsCount={stationsCount}
             paymentsCount={paymentsCount}
+            activeServicesCount={activeServicesCount} // 👈 nueva prop
           />
         )}
         {activeTab === 'users' && <UsersList />}
