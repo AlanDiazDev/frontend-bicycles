@@ -1,5 +1,6 @@
 import React from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { LockClosedIcon, LockOpenIcon } from "@heroicons/react/24/solid";
 
 export default function EditBikeModal({ isOpen, onClose, bike, onSave }) {
   const [formData, setFormData] = React.useState(bike || {});
@@ -15,7 +16,19 @@ export default function EditBikeModal({ isOpen, onClose, bike, onSave }) {
   if (!isOpen) return null;
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let blockedValue = formData.blocked;
+
+    // lógica automática del candado según estado
+    if (name === "status") {
+      if (value === "Rented") {
+        blockedValue = false;
+      } else {
+        blockedValue = true;
+      }
+    }
+
+    setFormData({ ...formData, [name]: value, blocked: blockedValue });
   };
 
   const handleMapClick = (e) => {
@@ -65,6 +78,16 @@ export default function EditBikeModal({ isOpen, onClose, bike, onSave }) {
               <option value="Rented">Ocupada</option>
               <option value="Disabled">Deshabilitada</option>
             </select>
+          </div>
+
+          {/* Candado visual */}
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium">Candado:</span>
+            {formData.blocked ? (
+              <LockClosedIcon className="h-6 w-6 text-gray-700" title="Bloqueada" />
+            ) : (
+              <LockOpenIcon className="h-6 w-6 text-green-600" title="Desbloqueada" />
+            )}
           </div>
 
           {isLoaded && (

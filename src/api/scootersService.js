@@ -2,38 +2,34 @@
 
 // Datos locales simulados
 let scooters = [
-  // Cerca del centro (~2-3 cuadras)
-  { id: 1, name: "Scooter #1", status: "Available", lat: -35.6591, lng: -63.7575 },
-  { id: 2, name: "Scooter #2", status: "Rented", lat: -35.6596, lng: -63.7582 },
-  { id: 3, name: "Scooter #3", status: "Disabled", lat: -35.6589, lng: -63.7568 },
-  { id: 4, name: "Scooter #4", status: "Available", lat: -35.6602, lng: -63.7571 },
+  // Scooters cerca del centro
+  { id: 1, name: "Scooter #1", status: "Available", lat: -35.6601, lng: -63.7568, blocked: true },
+  { id: 2, name: "Scooter #2", status: "Rented", lat: -35.6587, lng: -63.7592, blocked: false },
+  { id: 3, name: "Scooter #3", status: "Disabled", lat: -35.6615, lng: -63.7584, blocked: true },
+  { id: 4, name: "Scooter #4", status: "Available", lat: -35.6579, lng: -63.7565, blocked: true },
 
-  // Un poco más lejos (~5-8 cuadras)
-  { id: 5, name: "Scooter #5", status: "Rented", lat: -35.6620, lng: -63.7590 },
-  { id: 6, name: "Scooter #6", status: "Available", lat: -35.6615, lng: -63.7555 },
-  { id: 7, name: "Scooter #7", status: "Disabled", lat: -35.6578, lng: -63.7598 },
-  { id: 8, name: "Scooter #8", status: "Available", lat: -35.6630, lng: -63.7572 },
+  // Scooters intermedios
+  { id: 5, name: "Scooter #5", status: "Rented", lat: -35.6623, lng: -63.7601, blocked: false },
+  { id: 6, name: "Scooter #6", status: "Available", lat: -35.6598, lng: -63.7549, blocked: true },
+  { id: 7, name: "Scooter #7", status: "Disabled", lat: -35.6607, lng: -63.7615, blocked: true },
+  { id: 8, name: "Scooter #8", status: "Available", lat: -35.6581, lng: -63.7587, blocked: true },
+  { id: 9, name: "Scooter #9", status: "Rented", lat: -35.6619, lng: -63.7562, blocked: false },
+  { id: 10, name: "Scooter #10", status: "Available", lat: -35.6575, lng: -63.7599, blocked: true },
 
-  // Más lejos (~10-15 cuadras, 1.5–2 km)
-  { id: 9, name: "Scooter #9", status: "Rented", lat: -35.6705, lng: -63.7605 },
-  { id: 10, name: "Scooter #10", status: "Available", lat: -35.6712, lng: -63.7520 },
-  { id: 11, name: "Scooter #11", status: "Disabled", lat: -35.6545, lng: -63.7620 },
-  { id: 12, name: "Scooter #12", status: "Available", lat: -35.6538, lng: -63.7505 },
-  { id: 13, name: "Scooter #13", status: "Rented", lat: -35.6720, lng: -63.7650 },
-  { id: 14, name: "Scooter #14", status: "Available", lat: -35.6550, lng: -63.7450 },
-  { id: 15, name: "Scooter #15", status: "Disabled", lat: -35.6685, lng: -63.7700 },
-  { id: 16, name: "Scooter #16", status: "Available", lat: -35.6525, lng: -63.7550 },
+  // Scooters más lejos (~10-15 cuadras)
+  { id: 11, name: "Scooter #11", status: "Disabled", lat: -35.6705, lng: -63.7605, blocked: true },
+  { id: 12, name: "Scooter #12", status: "Available", lat: -35.6712, lng: -63.7520, blocked: true },
+  { id: 13, name: "Scooter #13", status: "Rented", lat: -35.6545, lng: -63.7620, blocked: false },
+  { id: 14, name: "Scooter #14", status: "Available", lat: -35.6538, lng: -63.7505, blocked: true },
+  { id: 15, name: "Scooter #15", status: "Disabled", lat: -35.6720, lng: -63.7650, blocked: true },
+  { id: 16, name: "Scooter #16", status: "Available", lat: -35.6550, lng: -63.7450, blocked: true },
 
   // Mezcla intermedia
-  { id: 17, name: "Scooter #17", status: "Rented", lat: -35.6640, lng: -63.7610 },
-  { id: 18, name: "Scooter #18", status: "Available", lat: -35.6608, lng: -63.7635 },
-  { id: 19, name: "Scooter #19", status: "Disabled", lat: -35.6570, lng: -63.7535 },
-  { id: 20, name: "Scooter #20", status: "Available", lat: -35.6625, lng: -63.7545 },
+  { id: 17, name: "Scooter #17", status: "Rented", lat: -35.6640, lng: -63.7610, blocked: false },
+  { id: 18, name: "Scooter #18", status: "Available", lat: -35.6608, lng: -63.7635, blocked: true },
+  { id: 19, name: "Scooter #19", status: "Disabled", lat: -35.6570, lng: -63.7535, blocked: true },
+  { id: 20, name: "Scooter #20", status: "Available", lat: -35.6625, lng: -63.7545, blocked: true },
 ];
-
-
-
-
 
 // Obtener lista
 export const getScooters = async () => {

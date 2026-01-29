@@ -1,25 +1,40 @@
-import { useBikes } from '../hooks/useBikes';
-import { PencilIcon, TrashIcon, XCircleIcon, PlusIcon } from '@heroicons/react/24/solid';
-import EditModal from './EditModal';
-import AddBikeModal from './AddBikeModal';
-import React, { useState } from 'react';
-import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
+import React, { useState } from "react";
+import { useBikes } from "../hooks/useBikes";
+import {
+  PencilIcon,
+  TrashIcon,
+  XCircleIcon,
+  PlusIcon,
+  LockClosedIcon,
+  LockOpenIcon,
+} from "@heroicons/react/24/solid";
+import EditModal from "./EditModal";
+import AddBikeModal from "./AddBikeModal";
+import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from "@react-google-maps/api";
 
 export default function BikesList() {
-  const { data: bikes = [], isLoading, editBike, deleteBike, disableBike, addBike } = useBikes();
-  const [selectedBike, setSelectedBike] = useState(null);
+  const {
+    data: bikes = [],
+    isLoading,
+    editBike,
+    deleteBike,
+    disableBike,
+    addBike,
+  } = useBikes();
+
+  const [selectedBikeId, setSelectedBikeId] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // Estado para paginado
+  // paginado
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 10;
+  const recordsPerPage = 5;
 
-  // Estado para orden dinámico
+  // orden dinámico
   const [sortBy, setSortBy] = useState("name");
   const [sortOrder, setSortOrder] = useState("asc");
 
-  // Toggle para mapa
+  // toggle mapa
   const [showAllMarkers, setShowAllMarkers] = useState(true);
 
   const sortRecords = (list) => {
@@ -40,17 +55,17 @@ export default function BikesList() {
   const indexOfFirst = indexOfLast - recordsPerPage;
   const currentBikes = sortedBikes.slice(indexOfFirst, indexOfLast);
 
-  // Google Maps
+  // mapa
   const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+    id: "google-map-script",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
   });
   const center = { lat: -35.6593, lng: -63.7579 };
 
   if (isLoading) return <p>Loading bikes...</p>;
 
   const handleEditClick = (bike) => {
-    setSelectedBike(bike);
+    setSelectedBikeId(bike.id);
     setIsEditModalOpen(true);
   };
 
@@ -62,14 +77,35 @@ export default function BikesList() {
     addBike(newBike);
   };
 
-  // Íconos según estado
+  // toggle candado
+  const toggleLock = (bike) => {
+    if (bike.status === "Disabled") return;
+
+    let updatedBike;
+    if (bike.blocked) {
+      updatedBike = { ...bike, status: "Rented", blocked: false };
+    } else {
+      updatedBike = { ...bike, status: "Available", blocked: true };
+    }
+
+    editBike({ id: updatedBike.id, payload: updatedBike });
+  };
+
+  // íconos según estado
   const getBikeIconByStatus = (status) => {
     let url;
     switch (status) {
-      case "Available": url = "/bike-green.svg"; break;
-      case "Rented": url = "/bike-red.svg"; break;
-      case "Disabled": url = "/bike-gray.svg"; break;
-      default: url = "/bike-blue.svg";
+      case "Available":
+        url = "/bike-green.svg";
+        break;
+      case "Rented":
+        url = "/bike-red.svg";
+        break;
+      case "Disabled":
+        url = "/bike-gray.svg";
+        break;
+      default:
+        url = "/bike-blue.svg";
     }
     return {
       url,
@@ -78,22 +114,32 @@ export default function BikesList() {
     };
   };
 
-  // Lista de markers según toggle
   const markersToShow = showAllMarkers ? sortedBikes : currentBikes;
+
+  // derivar objeto actualizado
+  const selectedBike = bikes.find((b) => b.id === selectedBikeId);
 
   return (
     <div className="space-y-6">
-      {/* Tabla */}
+      {/* tabla */}
       <div className="bg-white border rounded-lg shadow p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">Bikes</h3>
           <div className="flex space-x-2">
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border rounded px-2 py-1">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="border rounded px-2 py-1"
+            >
               <option value="name">Name</option>
               <option value="status">Status</option>
               <option value="id">ID</option>
             </select>
-            <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} className="border rounded px-2 py-1">
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="border rounded px-2 py-1"
+            >
               <option value="asc">Ascendente</option>
               <option value="desc">Descendente</option>
             </select>
@@ -133,22 +179,57 @@ export default function BikesList() {
                 </td>
                 <td className="p-3 border">Lat: {b.lat}, Lng: {b.lng}</td>
                 <td className="p-3 border flex space-x-3">
-                  <button onClick={() => handleEditClick(b)} className="text-blue-500 hover:text-blue-700" title="Edit">
+                  <button
+                    onClick={() => handleEditClick(b)}
+                    className="text-blue-500 hover:text-blue-700"
+                    title="Edit"
+                  >
                     <PencilIcon className="h-5 w-5" />
                   </button>
-                  <button onClick={() => deleteBike(b.id)} className="text-red-500 hover:text-red-700" title="Delete">
+                  <button
+                    onClick={() => {
+                      if (window.confirm("¿Seguro que quieres eliminar esta bicicleta?")) {
+                        deleteBike(b.id);
+                      }
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                    title="Delete"
+                  >
                     <TrashIcon className="h-5 w-5" />
                   </button>
-                  <button onClick={() => disableBike(b.id)} className="text-yellow-500 hover:text-yellow-700" title="Disable">
+
+                  <button
+                    onClick={() => disableBike(b.id)}
+                    className="text-yellow-500 hover:text-yellow-700"
+                    title="Disable"
+                  >
                     <XCircleIcon className="h-5 w-5" />
                   </button>
+                  {b.status === "Disabled" ? (
+                    <LockClosedIcon
+                      className="h-5 w-5 text-gray-400 cursor-not-allowed"
+                      title="Bloqueada (deshabilitada)"
+                    />
+                  ) : (
+                    <button
+                      onClick={() => toggleLock(b)}
+                      className="focus:outline-none"
+                      title={b.blocked ? "Bloqueada" : "Desbloqueada"}
+                    >
+                      {b.blocked ? (
+                        <LockClosedIcon className="h-5 w-5 text-gray-700 hover:text-gray-900" />
+                      ) : (
+                        <LockOpenIcon className="h-5 w-5 text-green-600 hover:text-green-800" />
+                      )}
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {/* Paginado */}
+        {/* paginado */}
         <div className="flex justify-between items-center mt-4">
           <button
             disabled={currentPage === 1}
@@ -160,15 +241,13 @@ export default function BikesList() {
           <span>Página {currentPage} de {totalPages}</span>
           <button
             disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-            className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
           >
             Siguiente
           </button>
         </div>
       </div>
 
-      {/* Mapa con toggle */}
+      {/* mapa con toggle */}
       {isLoaded && (
         <div className="bg-white border rounded-lg shadow p-6">
           <div className="flex justify-between items-center mb-4">
@@ -183,7 +262,7 @@ export default function BikesList() {
           </div>
 
           <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '400px' }}
+            mapContainerStyle={{ width: "100%", height: "400px" }}
             center={center}
             zoom={14}
           >
@@ -192,14 +271,17 @@ export default function BikesList() {
                 key={b.id}
                 position={{ lat: parseFloat(b.lat), lng: parseFloat(b.lng) }}
                 icon={getBikeIconByStatus(b.status)}
-                onClick={() => setSelectedBike(b)}
+                onClick={() => setSelectedBikeId(b.id)}
               />
             ))}
 
             {selectedBike && (
               <InfoWindow
-                position={{ lat: parseFloat(selectedBike.lat), lng: parseFloat(selectedBike.lng) }}
-                onCloseClick={() => setSelectedBike(null)}
+                position={{
+                  lat: parseFloat(selectedBike.lat),
+                  lng: parseFloat(selectedBike.lng),
+                }}
+                onCloseClick={() => setSelectedBikeId(null)}
               >
                 <div className="text-sm">
                   <h4 className="font-semibold">{selectedBike.name}</h4>
@@ -221,15 +303,41 @@ export default function BikesList() {
                     </button>
                     <button
                       onClick={() => {
-                        if (window.confirm("¿Seguro que quieres eliminar esta bicicleta?")) {
+                        if (
+                          window.confirm(
+                            "¿Seguro que quieres eliminar esta bicicleta?"
+                          )
+                        ) {
                           deleteBike(selectedBike.id);
-                          setSelectedBike(null);
+                          setSelectedBikeId(null);
                         }
                       }}
                       className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                     >
                       Eliminar
                     </button>
+
+                    {/* Candado clickeable */}
+                    {selectedBike.status === "Disabled" ? (
+                      <LockClosedIcon
+                        className="h-5 w-5 text-gray-400 cursor-not-allowed"
+                        title="Bloqueada (deshabilitada)"
+                      />
+                    ) : (
+                      <button
+                        onClick={() => toggleLock(selectedBike)}
+                        className="focus:outline-none"
+                        title={
+                          selectedBike.blocked ? "Bloqueada" : "Desbloqueada"
+                        }
+                      >
+                        {selectedBike.blocked ? (
+                          <LockClosedIcon className="h-5 w-5 text-gray-700 hover:text-gray-900" />
+                        ) : (
+                          <LockOpenIcon className="h-5 w-5 text-green-600 hover:text-green-800" />
+                        )}
+                      </button>
+                    )}
                   </div>
                 </div>
               </InfoWindow>
@@ -238,7 +346,7 @@ export default function BikesList() {
         </div>
       )}
 
-      {/* Modals */}
+      {/* modals */}
       <EditModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}

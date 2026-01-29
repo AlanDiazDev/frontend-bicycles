@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useScooters } from '../hooks/useScooters';
-import { PencilIcon, TrashIcon, XCircleIcon, PlusIcon } from '@heroicons/react/24/solid';
+import { PencilIcon, TrashIcon, XCircleIcon, PlusIcon, LockClosedIcon, LockOpenIcon } from '@heroicons/react/24/solid';
 import EditScooterModal from './EditScooterModal';
 import AddScooterModal from './AddScooterModal';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 
 export default function ScootersList() {
   const { data: scooters = [], isLoading, editScooter, deleteScooter, disableScooter, addScooter } = useScooters();
-  const [selectedScooter, setSelectedScooter] = useState(null);
+  // const [selectedScooter, setSelectedScooter] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
@@ -40,6 +40,12 @@ export default function ScootersList() {
   const indexOfFirst = indexOfLast - recordsPerPage;
   const currentScooters = sortedScooters.slice(indexOfFirst, indexOfLast);
 
+  const [selectedScooterId, setSelectedScooterId] = useState(null);
+
+  // derivar objeto actualizado
+  const selectedScooter = scooters.find((s) => s.id === selectedScooterId);
+
+
   // mapa
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -50,7 +56,7 @@ export default function ScootersList() {
   if (isLoading) return <p>Loading scooters...</p>;
 
   const handleEditClick = (scooter) => {
-    setSelectedScooter(scooter);
+    setSelectedScooterId(scooter.id);
     setIsEditModalOpen(true);
   };
 
@@ -60,6 +66,22 @@ export default function ScootersList() {
 
   const handleSaveNew = (newScooter) => {
     addScooter(newScooter);
+  };
+
+  // toggle candado
+  const toggleLock = (scooter) => {
+    if (scooter.status === "Disabled") return; // no se puede cambiar
+
+    let updatedScooter;
+    if (scooter.blocked) {
+      // estaba bloqueado → desbloquear y alquilar
+      updatedScooter = { ...scooter, status: "Rented", blocked: false };
+    } else {
+      // estaba desbloqueado → bloquear y marcar disponible
+      updatedScooter = { ...scooter, status: "Available", blocked: true };
+    }
+
+    editScooter({ id: updatedScooter.id, payload: updatedScooter });
   };
 
   // íconos según estado
@@ -121,13 +143,12 @@ export default function ScootersList() {
                 <td className="p-3 border">{s.id}</td>
                 <td className="p-3 border">{s.name}</td>
                 <td
-                  className={`p-3 border text-center font-semibold ${
-                    s.status === "Available"
-                      ? "bg-green-100 text-green-700"
-                      : s.status === "Rented"
+                  className={`p-3 border text-center font-semibold ${s.status === "Available"
+                    ? "bg-green-100 text-green-700"
+                    : s.status === "Rented"
                       ? "bg-red-100 text-red-700"
                       : "bg-gray-200 text-gray-700"
-                  }`}
+                    }`}
                 >
                   {s.status}
                 </td>
@@ -136,12 +157,41 @@ export default function ScootersList() {
                   <button onClick={() => handleEditClick(s)} className="text-blue-500 hover:text-blue-700" title="Edit">
                     <PencilIcon className="h-5 w-5" />
                   </button>
-                  <button onClick={() => deleteScooter(s.id)} className="text-red-500 hover:text-red-700" title="Delete">
+                  <button
+                    onClick={() => {
+                      if (window.confirm("¿Seguro que quieres eliminar este scooter?")) {
+                        deleteScooter(s.id);
+                      }
+                    }}
+                    className="text-red-500 hover:text-red-700"
+                    title="Delete"
+                  >
                     <TrashIcon className="h-5 w-5" />
                   </button>
+
                   <button onClick={() => disableScooter(s.id)} className="text-yellow-500 hover:text-yellow-700" title="Disable">
                     <XCircleIcon className="h-5 w-5" />
                   </button>
+
+                  {/* Candado clickeable excepto si está Disabled */}
+                  {s.status === "Disabled" ? (
+                    <LockClosedIcon
+                      className="h-5 w-5 text-gray-400 cursor-not-allowed"
+                      title="Bloqueada (deshabilitada)"
+                    />
+                  ) : (
+                    <button
+                      onClick={() => toggleLock(s)}
+                      className="focus:outline-none"
+                      title={s.blocked ? "Bloqueada" : "Desbloqueada"}
+                    >
+                      {s.blocked ? (
+                        <LockClosedIcon className="h-5 w-5 text-gray-700 hover:text-gray-900" />
+                      ) : (
+                        <LockOpenIcon className="h-5 w-5 text-green-600 hover:text-green-800" />
+                      )}
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -175,9 +225,8 @@ export default function ScootersList() {
             <h3 className="text-xl font-semibold">Mapa de Scooters</h3>
             <button
               onClick={() => setShowAllMarkers(!showAllMarkers)}
-              className={`px-3 py-1 rounded ${
-                showAllMarkers ? "bg-blue-500 text-white" : "bg-gray-300"
-              }`}
+              className={`px-3 py-1 rounded ${showAllMarkers ? "bg-blue-500 text-white" : "bg-gray-300"
+                }`}
             >
               {showAllMarkers ? "Todos los registros" : "Solo página actual"}
             </button>
@@ -187,20 +236,24 @@ export default function ScootersList() {
             mapContainerStyle={{ width: '100%', height: '400px' }}
             center={center}
             zoom={14}
-                    >
+          >
             {markersToShow.map((s) => (
               <Marker
                 key={s.id}
                 position={{ lat: parseFloat(s.lat), lng: parseFloat(s.lng) }}
                 icon={getScooterIconByStatus(s.status)}
-                onClick={() => setSelectedScooter(s)}
+                onClick={() => setSelectedScooterId(s.id)}
               />
+
             ))}
 
             {selectedScooter && (
               <InfoWindow
-                position={{ lat: parseFloat(selectedScooter.lat), lng: parseFloat(selectedScooter.lng) }}
-                onCloseClick={() => setSelectedScooter(null)}
+                position={{
+                  lat: parseFloat(selectedScooter.lat),
+                  lng: parseFloat(selectedScooter.lng),
+                }}
+                onCloseClick={() => setSelectedScooterId(null)}
               >
                 <div className="text-sm">
                   <h4 className="font-semibold">{selectedScooter.name}</h4>
@@ -224,17 +277,38 @@ export default function ScootersList() {
                       onClick={() => {
                         if (window.confirm("¿Seguro que quieres eliminar este scooter?")) {
                           deleteScooter(selectedScooter.id);
-                          setSelectedScooter(null);
+                          setSelectedScooterId(null);
                         }
                       }}
                       className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                     >
                       Eliminar
                     </button>
+
+                    {/* Candado clickeable */}
+                    {selectedScooter.status === "Disabled" ? (
+                      <LockClosedIcon
+                        className="h-5 w-5 text-gray-400 cursor-not-allowed"
+                        title="Bloqueada (deshabilitada)"
+                      />
+                    ) : (
+                      <button
+                        onClick={() => toggleLock(selectedScooter)}
+                        className="focus:outline-none"
+                        title={selectedScooter.blocked ? "Bloqueada" : "Desbloqueada"}
+                      >
+                        {selectedScooter.blocked ? (
+                          <LockClosedIcon className="h-5 w-5 text-gray-700 hover:text-gray-900" />
+                        ) : (
+                          <LockOpenIcon className="h-5 w-5 text-green-600 hover:text-green-800" />
+                        )}
+                      </button>
+                    )}
                   </div>
                 </div>
               </InfoWindow>
             )}
+
           </GoogleMap>
         </div>
       )}
