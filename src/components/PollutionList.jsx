@@ -19,6 +19,9 @@ export default function PollutionList() {
   const [sortBy, setSortBy] = useState("level");
   const [sortOrder, setSortOrder] = useState("desc");
 
+  // Estado para toggle 
+  const [showAllMarkers, setShowAllMarkers] = useState(true);
+
   const sortRecords = (list) => {
     return [...list].sort((a, b) => {
       let valA = a[sortBy];
@@ -205,14 +208,23 @@ export default function PollutionList() {
       {/* Mapa */}
       {isLoaded && (
         <div className="bg-white border rounded-lg shadow p-6">
-          <h3 className="text-xl font-semibold mb-4">Mapa de Sensores</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold">Mapa de Sensores</h3>
+            <button
+              onClick={() => setShowAllMarkers(!showAllMarkers)}
+              className={`px-3 py-1 rounded ${showAllMarkers ? "bg-blue-500 text-white" : "bg-gray-300"
+                }`}
+            >
+              {showAllMarkers ? "Todos los registros" : "Solo página actual"}
+            </button>
+          </div>
+
           <GoogleMap
             mapContainerStyle={{ width: '100%', height: '400px' }}
             center={center}
             zoom={14}
           >
-            {/* {pollution.map((p) => ( */}
-            {currentPollution.map((p) => (
+            {(showAllMarkers ? sortedPollution : currentPollution).map((p) => (
               <Marker
                 key={p.id}
                 position={{ lat: parseFloat(p.lat), lng: parseFloat(p.lng) }}
@@ -239,10 +251,10 @@ export default function PollutionList() {
                   <div className="w-full bg-gray-200 rounded h-2 mt-1">
                     <div
                       className={`h-2 rounded ${selectedPollution.level > 70
-                          ? 'bg-red-500'
-                          : selectedPollution.level > 30
-                            ? 'bg-yellow-500'
-                            : 'bg-green-500'
+                        ? 'bg-red-500'
+                        : selectedPollution.level > 30
+                          ? 'bg-yellow-500'
+                          : 'bg-green-500'
                         }`}
                       style={{ width: `${selectedPollution.level}%` }}
                     />

@@ -24,6 +24,9 @@ export default function ContainersList() {
     const indexOfFirst = indexOfLast - recordsPerPage;
     const currentContainers = sortedContainers.slice(indexOfFirst, indexOfLast);
 
+    // Estado para toggle 
+    const [showAllMarkers, setShowAllMarkers] = useState(true);
+
     // Configuración del mapa
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -98,10 +101,10 @@ export default function ContainersList() {
                                 <td className="p-3 border">{c.type}</td>
                                 <td
                                     className={`p-3 border text-center font-semibold ${c.fillLevel > 70
-                                            ? "bg-red-100 text-red-700"
-                                            : c.fillLevel > 30
-                                                ? "bg-yellow-100 text-yellow-700"
-                                                : "bg-green-100 text-green-700"
+                                        ? "bg-red-100 text-red-700"
+                                        : c.fillLevel > 30
+                                            ? "bg-yellow-100 text-yellow-700"
+                                            : "bg-green-100 text-green-700"
                                         }`}
                                 >
                                     {c.fillLevel}%
@@ -146,13 +149,23 @@ export default function ContainersList() {
             {/* Mapa de Google con contenedores */}
             {isLoaded && (
                 <div className="bg-white border rounded-lg shadow p-6">
-                    <h3 className="text-xl font-semibold mb-4">Mapa de Contenedores</h3>
+                    {/* <h3 className="text-xl font-semibold mb-4">Mapa de Contenedores</h3> */}
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-xl font-semibold">Mapa de Contenedores</h3>
+                        <button
+                            onClick={() => setShowAllMarkers(!showAllMarkers)}
+                            className={`px-3 py-1 rounded ${showAllMarkers ? "bg-blue-500 text-white" : "bg-gray-300"
+                                }`}
+                        >
+                            {showAllMarkers ? "Todos los registros" : "Solo página actual"}
+                        </button>
+                    </div>
                     <GoogleMap
                         mapContainerStyle={{ width: '100%', height: '400px' }}
                         center={center}
                         zoom={14}
                     >
-                        {currentContainers.map((c) => (
+                        {(showAllMarkers ? sortedContainers : currentContainers).map((c) => (
                             <Marker
                                 key={c.id}
                                 position={{ lat: parseFloat(c.lat), lng: parseFloat(c.lng) }}
