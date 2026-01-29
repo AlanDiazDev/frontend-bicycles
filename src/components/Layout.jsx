@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, Routes, Route } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import UsersList from './UsersList';
@@ -12,9 +12,8 @@ import PollutionList from './PollutionList';
 import ParkingList from './ParkingList';
 import ActiveServicesList from './ActiveServicesList';
 
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBicycle, faPersonSkating, faCar, faDumpster, faSmog, faParking, faList, faAnglesLeft } from '@fortawesome/free-solid-svg-icons';
+import { faBicycle, faPersonSkating, faCar, faDumpster, faSmog, faParking, faList, faAnglesLeft, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 import {
   Bars3Icon,
@@ -26,6 +25,21 @@ import {
 
 export default function Layout() {
   const [isOpen, setIsOpen] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Cerrar menú si se hace click fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Helper NavItem con tooltip estilizado
   const NavItem = ({ to, icon, label, heroIcon: HeroIcon, sectionColor }) => (
@@ -51,23 +65,22 @@ export default function Layout() {
   );
 
   const DisabledNavItem = ({ icon, label }) => (
-  <div
-    className="relative group flex items-center px-4 py-2 rounded opacity-50 cursor-not-allowed"
-  >
-    <FontAwesomeIcon className="h-5 w-5" icon={icon} />
-    {isOpen && <span className="ml-2">{label}</span>}
-    {!isOpen && (
-      <span
-        className="absolute left-16 text-white text-xs rounded px-2 py-1 shadow-lg backdrop-blur-sm
+    <div
+      className="relative group flex items-center px-4 py-2 rounded opacity-50 cursor-not-allowed"
+    >
+      <FontAwesomeIcon className="h-5 w-5" icon={icon} />
+      {isOpen && <span className="ml-2">{label}</span>}
+      {!isOpen && (
+        <span
+          className="absolute left-16 text-white text-xs rounded px-2 py-1 shadow-lg backdrop-blur-sm
                    opacity-0 translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 
                    transition-all duration-300 ease-out delay-150 bg-gray-600"
-      >
-        {label}
-      </span>
-    )}
-  </div>
-);
-
+        >
+          {label}
+        </span>
+      )}
+    </div>
+  );
 
   return (
     <div className="flex h-screen">
@@ -97,7 +110,6 @@ export default function Layout() {
 
           {/* Movilidad */}
           {isOpen && <div className="px-4 py-2 text-gray-400 uppercase text-xs">Movilidad</div>}
-          {/* <NavItem to="/" icon={faCar} label="Automotores" sectionColor="bg-green-600" /> */}
           <DisabledNavItem icon={faCar} label="Automotores" />
           <NavItem to="/bikes" icon={faBicycle} label="Bicicletas" sectionColor="bg-green-600" />
           <NavItem to="/scooters" icon={faPersonSkating} label="Monopatines" sectionColor="bg-green-600" />
@@ -117,12 +129,44 @@ export default function Layout() {
 
       {/* Header */}
       <header
-        className={`fixed top-0 left-0 right-0 h-14 bg-white shadow flex items-center px-4 z-30 transition-all duration-300 
-          ${isOpen ? 'ml-64' : 'ml-16'}`}
+        className={`fixed top-0 left-0 right-0 h-14 bg-white shadow flex items-center justify-between px-4 z-30 transition-all duration-300 
+    ${isOpen ? 'ml-64' : 'ml-16'}`}
       >
+        {/* Logo */}
         <h1 className="ml-4 text-lg font-semibold flex items-center">
           <img src="/general-pico-logo.png" alt="Logo General Pico" className="h-10 w-10 md:h-12 md:w-12" />
         </h1>
+
+        {/* Avatar con menú por click */}
+        <div className="relative mr-4" ref={menuRef}>
+          {/* Avatar */}
+          <div
+            className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-bold cursor-pointer"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            A
+          </div>
+
+          {/* Menú desplegable */}
+          {menuOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg">
+              {/* Perfil */}
+              <div className="px-4 py-2 text-gray-700 border-b">
+                Perfil: Administrador
+              </div>
+
+              {/* Log out */}
+              <button
+                className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                onClick={() => console.log("Logout clickeado")}
+              >
+                <FontAwesomeIcon icon={faRightFromBracket} className="mr-2 text-red-500" />
+                Log out
+              </button>
+            </div>
+          )}
+        </div>
+
       </header>
 
       {/* Content */}

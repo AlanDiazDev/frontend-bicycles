@@ -89,7 +89,7 @@ export default function ContainersList() {
                             <th className="p-3 border">Nombre</th>
                             <th className="p-3 border">Tipo</th>
                             <th className="p-3 border">Nivel de llenado (%)</th>
-                            <th className="p-3 border">Coordenadas</th>
+                            <th className="p-3 border">Ubicacion</th>
                             <th className="p-3 border">Acciones</th>
                         </tr>
                     </thead>

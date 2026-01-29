@@ -122,7 +122,7 @@ export default function ScootersList() {
               onClick={() => setIsAddModalOpen(true)}
               className="flex items-center px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
             >
-              <PlusIcon className="h-5 w-5 mr-1" /> Add Scooter
+              <PlusIcon className="h-5 w-5 mr-1" /> Agregar Monopatin
             </button>
           </div>
         </div>
@@ -130,11 +130,11 @@ export default function ScootersList() {
         <table className="min-w-full border-collapse">
           <thead>
             <tr className="bg-gray-100 text-left">
-              <th className="p-3 border">ID</th>
-              <th className="p-3 border">Name</th>
-              <th className="p-3 border">Status</th>
-              <th className="p-3 border">Coordinates</th>
-              <th className="p-3 border">Actions</th>
+              <th className="p-3 border">Id</th>
+              <th className="p-3 border">Nombre</th>
+              <th className="p-3 border">Estado</th>
+              <th className="p-3 border">Ubicacion</th>
+              <th className="p-3 border">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -222,7 +222,7 @@ export default function ScootersList() {
       {isLoaded && (
         <div className="bg-white border rounded-lg shadow p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold">Mapa de Scooters</h3>
+            <h3 className="text-xl font-semibold">Mapa de Monopatines</h3>
             <button
               onClick={() => setShowAllMarkers(!showAllMarkers)}
               className={`px-3 py-1 rounded ${showAllMarkers ? "bg-blue-500 text-white" : "bg-gray-300"

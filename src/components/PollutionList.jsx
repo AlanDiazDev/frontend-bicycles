@@ -142,7 +142,7 @@ export default function PollutionList() {
               <th className="p-3 border">Categoría</th>
               <th className="p-3 border">Tipo</th>
               <th className="p-3 border">Nivel (%)</th>
-              <th className="p-3 border">Coordenadas</th>
+              <th className="p-3 border">Ubicacion</th>
               <th className="p-3 border">Acciones</th>
             </tr>
           </thead>
@@ -204,6 +204,21 @@ export default function PollutionList() {
           </button>
         </div>
       </div>
+
+      {/* Leyenda */}
+<div className="bg-gray-100 rounded shadow p-3">
+  <p className="text-sm text-gray-700">
+    <span className="font-bold">CO2</span> = Dióxido de Carbono |
+    <span className="font-bold ml-2">SO2</span> = Dióxido de Azufre |
+    <span className="font-bold ml-2">NO2</span> = Dióxido de Nitrógeno |
+    <span className="font-bold ml-2">PM10</span> = Partículas &lt; 10 µm |
+    <span className="font-bold ml-2">PM2.5</span> = Partículas &lt; 2.5 µm |
+    <span className="font-bold ml-2">Db</span> = Decibelios (Ruido) |
+    <span className="font-bold ml-2">Lux</span> = Intensidad Lumínica
+  </p>
+</div>
+
+
 
       {/* Mapa */}
       {isLoaded && (

@@ -119,7 +119,7 @@ export default function ParkingList() {
               <th className="p-3 border">Estado</th>
               <th className="p-3 border">Calle</th>
               <th className="p-3 border">Sector</th>
-              <th className="p-3 border">Coordenadas</th>
+              <th className="p-3 border">Ubicacion</th>
               <th className="p-3 border">Acciones</th>
             </tr>
           </thead>
