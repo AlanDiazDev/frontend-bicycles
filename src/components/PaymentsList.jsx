@@ -18,7 +18,7 @@ export default function PaymentsList() {
   return (
     <div className="bg-white border rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold">Payments</h3>
+        <h3 className="text-xl font-semibold">Pagos</h3>
         {/* <button
           onClick={() =>
             addPayment({ date: "2026-01-25", time: "19:05", amount: 2500, userId: 2 })
@@ -32,12 +32,12 @@ export default function PaymentsList() {
       <table className="min-w-full border-collapse">
         <thead>
           <tr className="bg-gray-100 text-left">
-            <th className="p-3 border">ID</th>
-            <th className="p-3 border">Date</th>
-            <th className="p-3 border">Time</th>
-            <th className="p-3 border">Amount</th>
-            <th className="p-3 border">User ID</th>
-            <th className="p-3 border">Actions</th>
+            <th className="p-3 border">Id</th>
+            <th className="p-3 border">Fecha</th>
+            <th className="p-3 border">Hora</th>
+            <th className="p-3 border">Monto</th>
+            <th className="p-3 border">Id Usuario</th>
+            <th className="p-3 border">Acciones</th>
           </tr>
         </thead>
         <tbody>
