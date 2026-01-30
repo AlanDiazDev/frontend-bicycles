@@ -39,23 +39,25 @@ export default function UsersList() {
   return (
     <div className="bg-white border rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold">Users</h3>
+        <h3 className="text-xl font-semibold">Usuarios</h3>
         <button
           onClick={() => setIsAddModalOpen(true)}
           className="flex items-center px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
-          <PlusIcon className="h-5 w-5 mr-1" /> Add User
+          <PlusIcon className="h-5 w-5 mr-1" /> Agregar Usuario
         </button>
       </div>
 
       <table className="min-w-full border-collapse">
         <thead>
           <tr className="bg-gray-100 text-left">
-            <th className="p-3 border">ID</th>
-            <th className="p-3 border">Name</th>
+            <th className="p-3 border">Id</th>
+            <th className="p-3 border">Nombre</th>
             <th className="p-3 border">Email</th>
-            <th className="p-3 border">Status</th>
-            <th className="p-3 border">Actions</th>
+            <th className="p-3 border">DNI</th>
+            <th className="p-3 border">Último Ingreso</th>
+            <th className="p-3 border">Estado</th>
+            <th className="p-3 border">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -64,6 +66,8 @@ export default function UsersList() {
               <td className="p-3 border">{u.id}</td>
               <td className="p-3 border">{u.name}</td>
               <td className="p-3 border">{u.email}</td>
+              <td className="p-3 border">{u.dni}</td>
+              <td className="p-3 border">{u.lastActivity}</td>
               <td className="p-3 border">{u.status}</td>
               <td className="p-3 border flex space-x-3">
                 <button
